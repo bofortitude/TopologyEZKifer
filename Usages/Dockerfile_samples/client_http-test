@@ -1,0 +1,30 @@
+# client:http-test
+
+FROM ubuntu:inet3
+MAINTAINER Chris Fei <bofei@fortinet.com>
+
+
+
+RUN apt-get update
+RUN apt-get install -y python
+RUN apt-get install -y python-setuptools
+
+RUN \
+	apt-get install -y python-dev \
+	&& apt-get install -y gcc \
+	&& apt-get install -y libffi-dev \
+	&& apt-get install -y libssl-dev
+
+
+
+
+
+
+COPY ./dockerlibs/http_test/http_test_6.8/http_install_6.8.py  /http_test/
+COPY ./dockerlibs/http_test/http_test_6.8/http_test_6.8.tar /http_test/
+RUN cd /http_test/ && python ./http_install_6.8.py
+
+
+
+
+

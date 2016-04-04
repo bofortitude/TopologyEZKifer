@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Topology>
+
+	<variable 
+	ovs_mgmt_name="ovs0"
+	ovs_name="ovs1"
+	host_interface="eth9"
+	client_image="client:http-test"
+	server123_image="ubuntu:apache2"
+	client1_eth0_ip="172.30.154.185/22"
+	client1_eth1_ip="10.76.185.1/16"
+	client1_eth1_vlan="1101"
+	server1_eth1_ip="10.78.185.101/16"
+	server2_eth1_ip="10.78.185.102/16"
+	server3_eth1_ip="10.78.185.103/16"
+	server123_eth1_vlan="1103"
+	server123_lo_ip="200.1.1.1/24"
+
+	server123_lo_net="200.1.1.0/24"
+	client1_eth0_route_gw="172.30.154.254"
+	client1_eth1_route_gw="10.76.1.187"
+	server123_eth1_route_gw="10.78.1.187"
+	
+	>
+	</variable>
+
+	<container>
+		<client1 image="client:http-test" cmd="/usr/sbin/sshd -D"></client1>
+		<server1 image="ubuntu:apache2"></server1>
+		<server2 image="ubuntu:apache2"></server2>
+		<server3 image="ubuntu:apache2"></server3>
+
+	</container>
+
+
+	<connection host_interface="ovs_name">
+		<link1 ovs="ovs_name" container_interface="eth1" container_ip="client1_eth1_ip" container="client1" vlan="client1_eth1_vlan"></link1>
+		<link2 ovs="ovs_name" container_interface="eth1" container_ip="server1_eth1_ip" container="server1" vlan="server123_eth1_vlan"></link2>
+		<link3 ovs="ovs_name" container_interface="eth1" container_ip="server2_eth1_ip" container="server2" vlan="server123_eth1_vlan"></link3>
+		<link4 ovs="ovs_name" container_interface="eth1" container_ip="server3_eth1_ip" container="server3" vlan="server123_eth1_vlan"></link4>
+		
+		<link9 ovs="ovs_mgmt_name" container_interface="eth0" container_ip="client1_eth0_ip" container="client1" vlan="0"></link9>
+
+	</connection>
+
+	<route>
+		<route1 container="client1" dst_net="server123_lo_net" gw="client1_eth1_route_gw"></route1>
+		<route2 container="server1" dst_net="0.0.0.0/0" gw="server123_eth1_route_gw"></route2>
+		<route3 container="server2" dst_net="0.0.0.0/0" gw="server123_eth1_route_gw"></route3>
+		<route4 container="server3" dst_net="0.0.0.0/0" gw="server123_eth1_route_gw"></route4>
+
+		<route9 container="client1" dst_net="default" gw="client1_eth0_route_gw"></route9>
+	</route>
+
+	<command>
+		<command1 container="server1" cmd="ip add add 200.1.1.1/24 dev lo"></command1>
+		<command1 container="server2" cmd="ip add add 200.1.1.1/24 dev lo"></command1>
+		<command1 container="server3" cmd="ip add add 200.1.1.1/24 dev lo"></command1>
+	</command>
+
+</Topology>
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Topology>
+
+	<variable 
+	ovs_mgmt_name="ovs0"
+	ovs_name="ovs1"
+	host_interface="eth9"
+	client_image="client:http-test"
+	server123_image="ubuntu:ssh"
+	server0_image="ubuntu:apache2"
+	client1_eth0_ip="172.30.154.185/22"
+	client1_eth1_ip="10.76.185.1/16"
+	client1_eth1_vlan="1101"
+	server1_eth1_ip="10.78.185.101/16"
+	server2_eth1_ip="10.78.185.102/16"
+	server3_eth1_ip="10.78.185.103/16"
+	server123_eth1_vlan="1103"
+	server1_eth2_ip="10.79.185.101/16"
+	server2_eth2_ip="10.79.185.102/16"
+	server3_eth2_ip="10.79.185.103/16"
+	server123_eth2_vlan="1104"
+	server0_eth1_ip="10.80.185.100/16"
+	server0_eth1_vlan="1105"
+
+	server0_lo_dst="200.1.1.0/24"
+	client1_eth0_route_gw="172.30.154.254"
+	client1_eth1_route_gw="10.76.1.187"
+	server123_eth1_route_dst="10.76.0.0/16"
+	server123_eth1_route_gw="10.78.1.187"
+	server123_eth2_route_gw="10.79.100.187"
+	server0_eth1_route_gw="10.80.100.187"
+	
+	>
+	</variable>
+
+	<container>
+		<client1 image="client:http-test" cmd="/usr/sbin/sshd -D"></client1>
+		<server1 image="ubuntu:ssh" cmd="/usr/sbin/sshd -D"></server1>
+		<server2 image="ubuntu:ssh" cmd="/usr/sbin/sshd -D"></server2>
+		<server3 image="ubuntu:ssh" cmd="/usr/sbin/sshd -D"></server3>
+		<server0 image="ubuntu:apache2"></server0>
+
+	</container>
+
+
+	<connection host_interface="ovs_name">
+		<link1 ovs="ovs_name" container_interface="eth1" container_ip="client1_eth1_ip" container="client1" vlan="client1_eth1_vlan"></link1>
+		<link2 ovs="ovs_name" container_interface="eth1" container_ip="server1_eth1_ip" container="server1" vlan="server123_eth1_vlan"></link2>
+		<link3 ovs="ovs_name" container_interface="eth1" container_ip="server2_eth1_ip" container="server2" vlan="server123_eth1_vlan"></link3>
+		<link4 ovs="ovs_name" container_interface="eth1" container_ip="server3_eth1_ip" container="server3" vlan="server123_eth1_vlan"></link4>
+		<link5 ovs="ovs_name" container_interface="eth2" container_ip="server1_eth2_ip" container="server1" vlan="server123_eth2_vlan"></link5>
+		<link6 ovs="ovs_name" container_interface="eth2" container_ip="server2_eth2_ip" container="server2" vlan="server123_eth2_vlan"></link6>
+		<link7 ovs="ovs_name" container_interface="eth2" container_ip="server3_eth2_ip" container="server3" vlan="server123_eth2_vlan"></link7>
+		<link8 ovs="ovs_name" container_interface="eth1" container_ip="server0_eth1_ip" container="server0" vlan="server0_eth1_vlan"></link8>
+		
+		<link9 ovs="ovs_mgmt_name" container_interface="eth0" container_ip="client1_eth0_ip" container="client1" vlan="0"></link9>
+
+	</connection>
+
+	<route>
+		<route1 container="client1" dst_net="server0_lo_dst" gw="client1_eth1_route_gw"></route1>
+		<route2 container="server1" dst_net="server123_eth1_route_dst" gw="server123_eth1_route_gw"></route2>
+		<route3 container="server2" dst_net="server123_eth1_route_dst" gw="server123_eth1_route_gw"></route3>
+		<route4 container="server3" dst_net="server123_eth1_route_dst" gw="server123_eth1_route_gw"></route4>
+		<route5 container="server1" dst_net="server0_lo_dst" gw="server123_eth2_route_gw"></route5>
+		<route6 container="server2" dst_net="server0_lo_dst" gw="server123_eth2_route_gw"></route6>
+		<route7 container="server3" dst_net="server0_lo_dst" gw="server123_eth2_route_gw"></route7>
+		<route8 container="server0" dst_net="default" gw="server0_eth1_route_gw"></route8>
+
+		<route9 container="client1" dst_net="default" gw="client1_eth0_route_gw"></route9>
+	</route>
+
+	<command>
+		<command1 container="server0" cmd="ip add add 200.1.1.1/24 dev lo"></command1>
+	</command>
+
+</Topology>
+
+
+
+
+
+
+
+
+
+
