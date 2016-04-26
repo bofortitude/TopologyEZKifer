@@ -1,5 +1,5 @@
 # client:openJDK
-FROM ubuntu:ssh
+FROM ubuntu:inet3
 MAINTAINER Chris Fei <bofei@fortinet.com>
 
 RUN apt-get update

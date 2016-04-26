@@ -1,5 +1,5 @@
 # ubuntu:jre
-FROM ubuntu:inet
+FROM ubuntu:inet3
 MAINTAINER Chris Fei <bofei@fortinet.com>
 
 ADD ./dockerlibs/jre-8u73-linux-x64.gz /usr/local/java/
