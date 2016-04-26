@@ -1,0 +1,20 @@
+# ubuntu:ftp
+
+FROM ubuntu:inet3
+MAINTAINER Chris Fei <bofei@fortinet.com>
+
+RUN apt-get update
+RUN apt-get install -y vsftpd
+RUN \
+	sed -i 's/anonymous_enable=NO/anonymous_enable=YES/' /etc/vsftpd.conf \
+	&& sed -i 's/#write_enable=YES/write_enable=YES/' /etc/vsftpd.conf \
+	&& sed -i 's/#anon_mkdir_write_enable=YES/anon_mkdir_write_enable=YES/' /etc/vsftpd.conf \
+	&& sed -i 's/#anon_upload_enable=YES/anon_upload_enable=YES/' /etc/vsftpd.conf \
+	&& echo "anon_other_write_enable=YES" >> /etc/vsftpd.conf
+
+RUN mkdir /srv/ftp/upload && chown ftp:root /srv/ftp/upload
+RUN echo "test1" > /srv/ftp/test1
+RUN echo "test2" > /srv/ftp/test2
+RUN chmod 777 /srv/ftp/test*
+
+

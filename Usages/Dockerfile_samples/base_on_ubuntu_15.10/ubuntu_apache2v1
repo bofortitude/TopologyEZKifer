@@ -1,0 +1,111 @@
+# ubuntu:apache2
+FROM ubuntu:inet
+MAINTAINER Chris Fei <bofei@fortinet.com>
+
+RUN apt-get update
+
+
+# Set up ssh server
+RUN apt-get install -y openssh-server
+RUN \
+        mkdir -p /var/run/sshd \
+        && echo 'root:fortinet' | chpasswd \
+        && sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+
+RUN \
+        apt-get install -y tcpdump \
+        && mv /usr/sbin/tcpdump /usr/bin/tcpdump
+
+
+
+
+ENV DEBIAN_FRONTEND noninteractive
+
+
+# install
+
+#RUN apt-get -yq install apache2 && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get -y install apache2 php5 php5-cli libapache2-mod-php5 
+
+#RUN echo "Asia/Shanghai" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
+
+
+# add scripts
+
+
+
+RUN \
+	echo '#!/bin/bash' >/run.sh \
+	&& echo "/usr/sbin/sshd &" >>/run.sh \
+	&& echo "/usr/sbin/apache2ctl -D FOREGROUND" >> /run.sh \
+	&& chmod +x /run.sh
+
+
+RUN \
+        echo "<?php" > /var/www/html/index.php \
+        && echo "echo \$_SERVER['SERVER_ADDR'];" >> /var/www/html/index.php  \
+        && echo "echo \"\\n\";" >> /var/www/html/index.php \
+        && echo "?>" >> /var/www/html/index.php
+
+
+
+# Modify the index for apache2
+RUN sed -i 's/DirectoryIndex index.html/DirectoryIndex index.php index.html/' /etc/apache2/mods-available/dir.conf
+
+# Enable the ssl site
+RUN a2enmod ssl
+RUN a2ensite default-ssl
+
+# Enable the rate-limit module
+RUN a2enmod ratelimit
+RUN \
+        echo "<Directory /var/www/html/>" > /etc/apache2/mods-available/ratelimit.conf \
+        && echo "SetOutputFilter RATE_LIMIT" >> /etc/apache2/mods-available/ratelimit.conf \
+        && echo "SetEnv rate-limit 20" >> /etc/apache2/mods-available/ratelimit.conf \
+        && echo "</Directory>" >> /etc/apache2/mods-available/ratelimit.conf  \
+        && ln -s /etc/apache2/mods-available/ratelimit.conf /etc/apache2/mods-enabled/
+
+
+
+# set apache env
+
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_PID_FILE /var/run/apache2.pid
+ENV APACHE_RUN_DIR /var/run/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
+ENV APACHE_SERVERADMIN admin@opsnotes.net
+ENV APACHE_SERVERNAME localhost
+ENV APACHE_SERVERALIAS docker.localhost
+ENV APACHE_DOCUMENTROOT /var/www
+
+#EXPOSE 80
+
+RUN \
+	echo "#!/bin/bash" > /gen_big_files.sh \
+	&& echo "html_path=\"/var/www/html/\"" >> /gen_big_files.sh \
+	&& echo "echo \"qwertyuiopasdfghjklzxcvbnm,\" > \$html_path\"big_1M\"" >> /gen_big_files.sh \
+	&& echo "for ((i=0;i<=37400;i++))" >> /gen_big_files.sh \
+	&& echo "do" >> /gen_big_files.sh \
+	&& echo "echo \"qwertyuiopasdfghjklzxcvbnm,\" >> \$html_path\"big_1M\"" >> /gen_big_files.sh \
+	&& echo "done" >> /gen_big_files.sh \
+	&& echo "cat \$html_path\"big_1M\" > \$html_path\"big_5M\"" >> /gen_big_files.sh \
+	&& echo "cat \$html_path\"big_1M\" >> \$html_path\"big_5M\"" >> /gen_big_files.sh \
+        && echo "cat \$html_path\"big_1M\" >> \$html_path\"big_5M\"" >> /gen_big_files.sh \
+        && echo "cat \$html_path\"big_1M\" >> \$html_path\"big_5M\"" >> /gen_big_files.sh \
+        && echo "cat \$html_path\"big_1M\" >> \$html_path\"big_5M\"" >> /gen_big_files.sh \
+	&& echo "cat \$html_path\"big_5M\" > \$html_path\"big_10M\"" >> /gen_big_files.sh \
+	&& echo "cat \$html_path\"big_5M\" >> \$html_path\"big_10M\"" >> /gen_big_files.sh \
+	&& echo "cat \$html_path\"big_10M\" > \$html_path\"big_20M\"" >> /gen_big_files.sh \
+	&& echo "cat \$html_path\"big_10M\" >> \$html_path\"big_20M\"" >> /gen_big_files.sh \
+	&& chmod +x /gen_big_files.sh
+
+
+
+
+CMD ["/run.sh"]
+
+
