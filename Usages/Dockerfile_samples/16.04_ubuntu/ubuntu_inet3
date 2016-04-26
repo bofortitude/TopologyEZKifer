@@ -1,0 +1,24 @@
+# ubuntu:inet3
+FROM ubuntu:inet
+MAINTAINER Chris Fei <bofei@fortinet.com>
+
+RUN apt-get update
+
+
+# Set up ssh server
+RUN apt-get install -y openssh-server
+RUN \
+        mkdir -p /var/run/sshd \
+        && echo 'root:fortinet' | chpasswd \
+	&& sed -i 's/^PermitRootLogin/#PermitRootLogin/' /etc/ssh/sshd_config \
+	&& echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
+
+
+RUN \
+        apt-get install -y tcpdump \
+        && mv /usr/sbin/tcpdump /usr/bin/tcpdump
+
+
+
+
+

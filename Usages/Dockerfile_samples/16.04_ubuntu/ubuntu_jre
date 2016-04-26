@@ -1,0 +1,10 @@
+# ubuntu:jre
+FROM ubuntu:inet3
+MAINTAINER Chris Fei <bofei@fortinet.com>
+
+ADD ./dockerlibs/jre-8u73-linux-x64.gz /usr/local/java/
+ENV JRE_HOME /usr/local/java/jre1.8.0_73
+ENV PATH $PATH:$HOME/bin:$JRE_HOME/bin
+RUN update-alternatives --install "/usr/bin/java" "java" "/usr/local/java/jre1.8.0_73/bin/java" 1
+
+
