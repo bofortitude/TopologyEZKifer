@@ -2,7 +2,7 @@
 
 
 __title__ = 'TopologyEZKifer'
-__version__ = '1.00'
+__version__ = '0.3'
 __author__ = 'Bo Fei'
 __license__ = 'Apache 2.0'
 
