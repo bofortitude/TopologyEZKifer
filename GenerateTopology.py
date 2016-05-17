@@ -81,9 +81,9 @@ class GenerateTopology():
         self.del_node_item(self.node_container, container_name)
         container_attrib = {container_node_label['image']:image}
         if cmd != None:
-            container_attrib[container_node_label['cmd']:cmd]
+            container_attrib[container_node_label['cmd']]=cmd
         if share_folder != None:
-            container_attrib[container_node_label['share_foler']:share_folder]
+            container_attrib[container_node_label['share_foler']]=share_folder
         self.add_node_item(self.node_container, container_name, container_attrib)
 
     def del_container(self, container_name):
@@ -148,16 +148,17 @@ class GenerateTopology():
 if __name__ == "__main__":
     myTOPO = GenerateTopology()
 
+
     file_name = 'example_Topology.xml'
-    if len(sys.argv) >= 2:
-        file_name = sys.argv[1]
 
 
     myTOPO.add_variable_attrib('server_image', 'ubuntu:apache2')
     myTOPO.add_variable_attrib('ovs_name', 'ovs1')
-    myTOPO.add_container('server1', 'server_image')
+    myTOPO.add_container('client1', 'ubuntu:http-test', cmd='/usr/sbin/sshd -D')
+    myTOPO.add_container('server1', 'server_image', cmd='/usr/sbin/sshd -D')
     myTOPO.add_connection_attrib('eth1', 'ovs_name')
     myTOPO.add_connection('link1', 'ovs_name', 'eth1', '10.76.1.1/16', 'server1', vlan='1101')
+    myTOPO.add_connection('link2', 'ovs_name', 'eth1', '10.76.1.2/16', 'client1', vlan='0')
     myTOPO.add_route('route1', 'server1', '100.1.1.0/24', '10.76.1.101')
     myTOPO.add_command('command1', 'server1', 'ip add add 200.1.1.1/24 dev lo')
     myTOPO.write(file_name)
