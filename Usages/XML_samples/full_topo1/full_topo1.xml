@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Topology>
+	<variable 
+	ovs_name="ovs1"
+	ovs_mgmt_name="ovs0"
+	host_interface="eth1"
+
+	client211_image="client:http-test"
+	router_image="ubuntu:inet3"
+	server212_image="ubuntu:apache2"
+	server_general_image="ubuntu:apache2"
+	
+	vlan1101="1101"
+	vlan1102="1102"
+	vlan1103="1103"
+	vlan1104="1104"
+	vlan1105="1105"
+	vlan1106="1106"
+	vlan1107="1107"
+	vlan1108="1108"
+	vlan1109="1109"
+
+	router201_eth1_ip="10.76.1.201/16"
+	router201_eth2_ip="10.81.1.201/16"
+	router202_eth1_ip="10.76.1.202/16"
+	router202_eth2_ip="10.82.1.202/16"
+        router203_eth1_ip="10.76.1.203/16"
+        router203_eth2_ip="10.83.1.203/16"
+        router204_eth1_ip="10.76.1.204/16"
+        router204_eth2_ip="10.84.1.204/16"
+	server205_eth1_ip="10.78.1.205/16"
+	server205_eth2_ip="10.79.1.205/16"
+        server206_eth1_ip="10.78.1.206/16"
+        server206_eth2_ip="10.79.1.206/16"
+        server207_eth1_ip="10.78.1.207/16"
+        server207_eth2_ip="10.79.1.207/16"
+	server208_eth1_ip="10.80.1.208/16"
+	server209_eth1_ip="10.80.1.209/16"
+	server210_eth1_ip="10.80.1.210/16"
+	client211_eth1_ip="10.76.1.211/16"
+	client211_eth0_ip="172.30.154.185/22"
+	server212_eth1_ip="10.76.1.212/16"
+	
+	server212_lo_ip="200.1.1.1/32"
+	server212_lo_subnet="200.1.1.0/24"
+	router201_eth1="10.76.1.201"
+	SLB48_1106_subnet="10.81.0.0/16"
+	SLB48_1106_gw="10.81.1.48"
+	SLB48_1103_gw="10.78.1.48"
+	SLB49_1104_gw="10.79.1.49"
+	SLB49_1105_gw="10.80.1.49"
+	SLB49_1108_subnet="10.83.0.0/16"
+	router203_eth1_gw="10.76.1.203"
+	server212_eth1_gw="10.76.1.212"
+	client211_mgmt_gw="172.30.154.254"
+	SLB48_1107_subnet="10.82.0.0/16"
+	router202_eth1_gw="10.76.1.202"
+	SLB49_1109_subnet="10.84.0.0/16"
+	router204_eth1_gw="10.76.1.204"
+	
+	>
+	</variable>
+	<container>
+		<client211 image="client211_image" cmd="/usr/sbin/sshd -D"/>
+		<server212 image="server212_image"/>
+		<router201 image="router_image" cmd="/usr/sbin/sshd -D"/>
+		<router202 image="router_image" cmd="/usr/sbin/sshd -D"/>
+		<router203 image="router_image" cmd="/usr/sbin/sshd -D"/>
+		<router204 image="router_image" cmd="/usr/sbin/sshd -D"/>
+		<server205 image="server_general_image"/>
+		<server206 image="server_general_image"/>
+		<server207 image="server_general_image"/>
+		<server208 image="server_general_image"/>
+		<server209 image="server_general_image"/>
+		<server210 image="server_general_image"/>
+	</container>
+	<connection host_interface="ovs_name">
+		<link1 container="client211" container_interface="eth1" container_ip="client211_eth1_ip" ovs="ovs_name" vlan="vlan1101"/>
+		<link2 container="client211" container_interface="eth0" container_ip="client211_eth0_ip" ovs="ovs_mgmt_name" vlan="0"/>
+		<link3 container="server212" container_interface="eth1" container_ip="server212_eth1_ip" ovs="ovs_name" vlan="vlan1101"/>
+		<link4 container="router201" container_interface="eth1" container_ip="router201_eth1_ip" ovs="ovs_name" vlan="vlan1101"/>
+		<link5 container="router201" container_interface="eth2" container_ip="router201_eth2_ip" ovs="ovs_name" vlan="vlan1106"/>
+		<link6 container="router202" container_interface="eth1" container_ip="router202_eth1_ip" ovs="ovs_name" vlan="vlan1101"/>
+		<link7 container="router202" container_interface="eth2" container_ip="router202_eth2_ip" ovs="ovs_name" vlan="vlan1107"/>
+		<link8 container="router203" container_interface="eth1" container_ip="router203_eth1_ip" ovs="ovs_name" vlan="vlan1101"/>
+		<link9 container="router203" container_interface="eth2" container_ip="router203_eth2_ip" ovs="ovs_name" vlan="vlan1108"/>
+		<link10 container="router204" container_interface="eth1" container_ip="router204_eth1_ip" ovs="ovs_name" vlan="vlan1101"/>
+		<link11 container="router204" container_interface="eth2" container_ip="router204_eth2_ip" ovs="ovs_name" vlan="vlan1109"/>
+		<link12 container="server205" container_interface="eth1" container_ip="server205_eth1_ip" ovs="ovs_name" vlan="vlan1103"/>
+		<link13 container="server205" container_interface="eth2" container_ip="server205_eth2_ip" ovs="ovs_name" vlan="vlan1104"/>
+                <link14 container="server206" container_interface="eth1" container_ip="server206_eth1_ip" ovs="ovs_name" vlan="vlan1103"/>
+                <link15 container="server206" container_interface="eth2" container_ip="server206_eth2_ip" ovs="ovs_name" vlan="vlan1104"/>
+                <link16 container="server207" container_interface="eth1" container_ip="server207_eth1_ip" ovs="ovs_name" vlan="vlan1103"/>
+                <link17 container="server207" container_interface="eth2" container_ip="server207_eth2_ip" ovs="ovs_name" vlan="vlan1104"/>
+		<link18 container="server208" container_interface="eth1" container_ip="server208_eth1_ip" ovs="ovs_name" vlan="vlan1105"/>
+		<link19 container="server209" container_interface="eth1" container_ip="server209_eth1_ip" ovs="ovs_name" vlan="vlan1105"/>
+		<link10 container="server210" container_interface="eth1" container_ip="server210_eth1_ip" ovs="ovs_name" vlan="vlan1105"/>
+	</connection>
+	<route>
+		<route1 container="client211" dst_net="SLB48_1106_subnet" gw="router201_eth1"/>
+		<route2 container="client211" dst_net="server212_lo_subnet" gw="router201_eth1"/>
+		<route3 container="server205" dst_net="server212_lo_subnet" gw="SLB49_1104_gw"/>
+		<route4 container="server206" dst_net="server212_lo_subnet" gw="SLB49_1104_gw"/>
+		<route5 container="server207" dst_net="server212_lo_subnet" gw="SLB49_1104_gw"/>
+		<route6 container="router203" dst_net="server212_lo_subnet" gw="server212_eth1_gw"/>
+		<route7 container="server205" dst_net="default" gw="SLB48_1103_gw"/>
+		<route8 container="server206" dst_net="default" gw="SLB48_1103_gw"/>
+		<route9 container="server207" dst_net="default" gw="SLB48_1103_gw"/>
+		<route10 container="server208" dst_net="default" gw="SLB49_1105_gw"/>
+		<route11 container="server209" dst_net="default" gw="SLB49_1105_gw"/>
+		<route12 container="server210" dst_net="default" gw="SLB49_1105_gw"/>
+		<route13 container="server212" dst_net="default" gw="router203_eth1_gw"/>
+		<route14 container="client211" dst_net="SLB49_1108_subnet" gw="router203_eth1_gw"/>
+		<route15 container="client211" dst_net="default" gw="client211_mgmt_gw"/>
+		<route16 container="client211" dst_net="SLB48_1107_subnet" gw="router202_eth1_gw"/>
+		<route17 container="client211" dst_net="SLB49_1109_subnet" gw="router204_eth1_gw"/>
+	</route>
+	<command>
+		<command1 cmd="ip add add 200.1.1.1/32 dev lo" container="server212"/>
+	</command>
+</Topology>
